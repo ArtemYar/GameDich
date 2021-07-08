@@ -2,7 +2,7 @@
   <div class="start-page__wrapper">
     <div class="start-page">
       <h1>GameDich</h1>
-      <slot></slot>
+      <slot name="start"></slot>
     </div>
   </div>
 </template>

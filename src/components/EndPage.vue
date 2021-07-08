@@ -1,7 +1,7 @@
 <template>
   <div class="end-page__wrapper">
     <div class="end-page">
-      <slot></slot>
+      <slot name="end"></slot>
     </div>
   </div>
 </template>

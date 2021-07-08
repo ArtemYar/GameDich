@@ -1,43 +1,45 @@
 <template>
-  <StartPage v-if="isStartPage">
-    <label class="start-page__cards-hand start-page__num-cards">Кол-во карт на руках
-      <input type="number" placeholder="Кол-во карт на руках" v-model="countHand" @keyup.enter="startGame">
-    </label>
-    <label class="start-page__cards-deck start-page__num-cards">Кол-во карт в колоде
-      <input type="number" placeholder="Кол-во карт в колоде" v-model="countDeck" @keyup.enter="startGame">
-    </label>
-    <button @click="startGame" @keyup.enter="startGame">Играть</button>
-  </StartPage>
-  <GamePage
-      v-if="isGamePage"
-      v-bind:cards-deck="cardsDeck"
-      v-bind:cards-hand="cardsHand"
-      v-bind:points="points"
-      v-bind:price-card="priceCard"
-  >
-    <template v-slot:img>
-      <img src="@/img/Deck.png" alt="Deck" @click="takeCard(pickedRadio);  gameWin(); gameOver();">
-    </template>
-    <template v-slot:radioButton>
-      <input type="radio" id="red" value="red" v-model="pickedRadio">
-      <label for="red"><span>Red</span></label>
-      <br>
-      <input type="radio" id="green" value="green" v-model="pickedRadio">
-      <label for="green"><span>Green</span></label>
-      <br>
-      <input type="radio" id="blue" value="blue" v-model="pickedRadio">
-      <label for="blue">Blue</label>
-    </template>
-  </GamePage>
-  <EndPage v-if="isEndPage">
-    <h1 :style="{color: resGame==='Game Win' ? `darkgreen` : `darkred`}" v-text="resGame"/>
-    <p v-text="msg"/>
-    <button @click="isEndPage=false; isStartPage=true">Меню</button>
-  </EndPage>
+  <keep-alive>
+    <component
+        :is="componentInstance"
+        :cards-deck="cardsDeck"
+        :cards-hand="cardsHand"
+        :points="points"
+        :price-card="priceCard"
+    >
+      <template v-slot:start>
+        <label class="start-page__cards-hand start-page__num-cards">Кол-во карт на руках
+          <input type="number" placeholder="Кол-во карт на руках" v-model="countHand" @keyup.enter="startGame">
+        </label>
+        <label class="start-page__cards-deck start-page__num-cards">Кол-во карт в колоде
+          <input type="number" placeholder="Кол-во карт в колоде" v-model="countDeck" @keyup.enter="startGame">
+        </label>
+        <button @click="startGame" @keyup.enter="startGame">Играть</button>
+      </template>
+      <template v-slot:img>
+        <img src="@/img/Deck.png" alt="Deck" @click="takeCard(pickedRadio);  gameWin(); gameOver();">
+      </template>
+      <template v-slot:radioButton>
+        <input type="radio" id="red" value="red" v-model="pickedRadio">
+        <label for="red"><span>Red</span></label>
+        <br>
+        <input type="radio" id="green" value="green" v-model="pickedRadio">
+        <label for="green"><span>Green</span></label>
+        <br>
+        <input type="radio" id="blue" value="blue" v-model="pickedRadio">
+        <label for="blue"><span>Blue</span></label>
+      </template>
+      <template v-slot:end>
+        <h1 :style="{color: resGame==='Game Win' ? `darkgreen` : `darkred`}" v-text="resGame"/>
+        <p v-text="msg"/>
+        <button @click="isEndPage=false; isStartPage=true">Меню</button>
+      </template>
+    </component>
+  </keep-alive>
 </template>
 
 <script>
-import StartPage from '@/components/StartPage';
+import StartPage from "@/components/StartPage";
 import GamePage from "@/components/GamePage";
 import EndPage from "@/components/EndPage";
 
@@ -99,9 +101,22 @@ export default {
     }
   },
   components: {
-    StartPage,
-    GamePage,
-    EndPage
+    'start-page': StartPage,
+    'game-page': GamePage,
+    'end-page': EndPage
+  },
+  computed: {
+    componentInstance() {
+      let name = "start-page";
+      if (this.isStartPage === true) {
+        name = "start-page"
+      } else if (this.isGamePage === true) {
+        name = "game-page"
+      } else if (this.isEndPage === true) {
+        name = "end-page"
+      }
+      return name
+    }
   },
   methods: {
     startGame() {
@@ -214,6 +229,7 @@ export default {
       color: #fff;
     }
   }
+
   .game-page {
 
     &__cards-deck {
@@ -226,6 +242,7 @@ export default {
         opacity: 0.7;
       }
     }
+
     &__buy-card {
       $primary: #6743ee;
       $seconday: #9F9F9F;
@@ -276,6 +293,7 @@ export default {
       }
     }
   }
+
   .end-page {
     & h1 {
       font-size: 60px;
