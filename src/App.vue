@@ -123,7 +123,7 @@ export default {
       }
     },
     gameWin() {
-      if (this.points.red === this.points.green && this.points.red === this.points.blue) {
+      if (Object.values(this.points).every(el => el === this.points[0])) {
         this.resGame = "Game Win";
         this.msg = "Вы выиграли!!"
         this.isEndPage = true;
