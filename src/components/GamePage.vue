@@ -20,7 +20,7 @@
           >
             <p v-for="(color,name) in card.getColor()" :key="name"
                :style="{color : name===card.getBigColor() ? `red`: `black`}"
-               v-text="`${name} : ${color}`"
+               v-text="`${name}: ${color}`"
             />
           </div>
         </div>
@@ -30,7 +30,7 @@
             v-for="(point,name) in points"
             :key="name"
             :style="{color: point<priceCard ? `red`:`black`}"
-            v-text="`${name} : ${point}`"
+            v-text="`${name}: ${point}`"
         />
         <div class="game-page__buy-card">
           <h1>Покупать за: </h1>
