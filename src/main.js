@@ -1,10 +1,9 @@
 import Vue from 'vue'
 import App from './App.vue'
 import store from './store'
-
-Vue.config.productionTip = false
-
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
 new Vue({
-  store,
-  render: h => h(App)
+    store,
+    render: h => h(App)
 }).$mount('#app')
