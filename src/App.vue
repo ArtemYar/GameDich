@@ -15,20 +15,21 @@
                 type="text" id="first"
                 v-model.trim="firstName"
             >
-            <div class="error" v-if="!$v.firstName.required">First name is required</div>
-            <div class="error" v-if="!$v.firstName.minLength">
+            <div class="error" v-if="!$v.firstName.required && $v.firstName.$dirty">First name is required</div>
+            <div class="error" v-if="!$v.firstName.minLength && $v.firstName.$dirty">
               First name must have at least {{ $v.firstName.$params.minLength.min }} letters.
             </div>
             <label for="last">Last name</label>
             <input type="text" id="last" v-model.trim="lastName">
-            <div class="error" v-if="!$v.lastName.required">Last name is required</div>
-            <div class="error" v-if="!$v.lastName.minLength">
+            <div class="error" v-if="!$v.lastName.required && $v.lastName.$dirty">Last name is required</div>
+            <div class="error" v-if="!$v.lastName.minLength && $v.lastName.$dirty">
               Last name must have at least {{ $v.lastName.$params.minLength.min }} letters.
             </div>
-            <vue-tel-input class="user-page__phone" v-model="phone" ></vue-tel-input>
-            <div class="error" v-if="!$v.phone.required">Phone is required</div>
+            <vue-tel-input class="user-page__phone" v-model="phone" @validate="setPhoneValidStatus"></vue-tel-input>
+            <div class="error" v-if="!$v.phone.required && $v.phone.$dirty">Phone is required</div>
+            <div class="error" v-if="!$v.phone.phoneValid && $v.phone.$dirty">Phone is not valid</div>
             <button type="submit">Ok</button>
-            <p style="color:red;"  v-if="submitStatus === 'ERROR'">Please fill the form correctly.</p>
+            <p style="color:red;" v-if="submitStatus === 'ERROR'">Please fill the form correctly.</p>
           </form>
         </template>
         <template v-slot:start>
@@ -128,9 +129,10 @@ export default {
       priceCard: 100,
       phone: '',
       firstName: '',
-      lastName:'',
+      lastName: '',
       deckImg,
-      submitStatus: null
+      submitStatus: null,
+      phoneValidStatus: false,
     }
   },
   validations: {
@@ -138,12 +140,15 @@ export default {
       required,
       minLength: minLength(3)
     },
-    lastName:{
+    lastName: {
       required,
       minLength: minLength(2)
     },
-    phone:{
+    phone: {
       required,
+      phoneValid() {
+        return this.phoneValidStatus
+      }
     }
   },
   components: {
@@ -170,15 +175,21 @@ export default {
     }
   },
   methods: {
+    setPhoneValidStatus(value) {
+      if(value.valid){
+        this.phoneValidStatus = value.valid
+      }else{
+        this.phoneValidStatus = false;
+      }
+    },
     submit() {
-
       this.$v.$touch()
       if (this.$v.$invalid) {
         this.submitStatus = 'ERROR'
-        this.isStartPage=false;
+        this.isStartPage = false;
       } else {
         this.submitStatus = 'OK';
-        this.isStartPage=true;
+        this.isStartPage = true;
       }
     },
     startGame() {
@@ -260,7 +271,7 @@ export default {
 
 .error {
   color: red;
-  margin-left:10px;
+  margin-left: 10px;
   align-self: flex-start;
 }
 </style>
